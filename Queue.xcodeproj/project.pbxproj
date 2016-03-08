@@ -15,6 +15,7 @@
 		0162D3171C8EDE1F00527727 /* QueueUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0162D3161C8EDE1F00527727 /* QueueUITests.swift */; };
 		0162D3251C8EE1AD00527727 /* AddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0162D3241C8EE1AD00527727 /* AddViewController.swift */; };
 		0162D3271C8EE1C600527727 /* QueueTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0162D3261C8EE1C600527727 /* QueueTableViewController.swift */; };
+		F0BB0ABB1C8F44000058F7FB /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0BB0ABA1C8F44000058F7FB /* CloudKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,8 @@
 		0162D3181C8EDE1F00527727 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0162D3241C8EE1AD00527727 /* AddViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddViewController.swift; sourceTree = "<group>"; };
 		0162D3261C8EE1C600527727 /* QueueTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueTableViewController.swift; sourceTree = "<group>"; };
+		F0BB0AB91C8F43E20058F7FB /* Queue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Queue.entitlements; sourceTree = "<group>"; };
+		F0BB0ABA1C8F44000058F7FB /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0BB0ABB1C8F44000058F7FB /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +83,7 @@
 		0162D2EA1C8EDE1F00527727 = {
 			isa = PBXGroup;
 			children = (
+				F0BB0ABA1C8F44000058F7FB /* CloudKit.framework */,
 				0162D2F51C8EDE1F00527727 /* Queue */,
 				0162D30A1C8EDE1F00527727 /* QueueTests */,
 				0162D3151C8EDE1F00527727 /* QueueUITests */,
@@ -99,6 +104,7 @@
 		0162D2F51C8EDE1F00527727 /* Queue */ = {
 			isa = PBXGroup;
 			children = (
+				F0BB0AB91C8F43E20058F7FB /* Queue.entitlements */,
 				0162D2F61C8EDE1F00527727 /* AppDelegate.swift */,
 				0162D3241C8EE1AD00527727 /* AddViewController.swift */,
 				0162D3261C8EE1C600527727 /* QueueTableViewController.swift */,
@@ -196,6 +202,12 @@
 				TargetAttributes = {
 					0162D2F21C8EDE1F00527727 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = Q852ZVJA4R;
+						SystemCapabilities = {
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 					0162D3061C8EDE1F00527727 = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -401,11 +413,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Queue/Queue.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Queue/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.devmountain.Queue;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gibsonsmiley.queue;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -413,11 +428,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Queue/Queue.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Queue/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.devmountain.Queue;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gibsonsmiley.queue;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

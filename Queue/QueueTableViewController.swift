@@ -7,8 +7,11 @@
 //
 
 import UIKit
+import CloudKit
 
 class QueueTableViewController: UITableViewController {
+    
+    var records = [CKRecord]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +22,18 @@ class QueueTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchCurrentQueue { (success) -> Void in
+            print("Did we succeed? -> \(success)")
+            
+            if success {
+                dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -26,22 +41,73 @@ class QueueTableViewController: UITableViewController {
     }
     
     @IBAction func subscribeButtonTapped() {
+        let predicate = NSPredicate(format: "wasAnswered == 0")
+        let subscription = CKSubscription(recordType: "Question", predicate: predicate, options: CKSubscriptionOptions.FiresOnRecordCreation)
+        let notifcationInfo = CKNotificationInfo()
+        notifcationInfo.shouldSendContentAvailable = true
+        notifcationInfo.desiredKeys = ["body", "studentName"]
+        notifcationInfo.alertBody = ""
         
+        subscription.notificationInfo = notifcationInfo
+        
+        CKContainer.defaultContainer().publicCloudDatabase.saveSubscription(subscription) { (subscription, error) -> Void in
+            if let error = error {
+                //failed
+                print(error.localizedDescription)
+            } else {
+                //succeeded
+                print(subscription)
+            }
+        }
+    }
+    
+    func fetchCurrentQueue(completion: (success: Bool) -> Void) {
+        let publicDatabase = CKContainer.defaultContainer().publicCloudDatabase
+        let predicate = NSPredicate(format: "wasAnswered == 0")
+        let query = CKQuery(recordType: "Questions", predicate: predicate)
+        
+        publicDatabase.performQuery(query, inZoneWithID: nil) { (recordsReturned, error) -> Void in
+            if error == nil {
+                //succeeded
+                guard let recordsReturned = recordsReturned else { completion(success: false); return }
+                let orderedRecords = recordsReturned.sort({
+                    let date0 = $0.creationDate ?? NSDate()
+                    let date1 = $1.creationDate ?? NSDate()
+                    return date0.timeIntervalSinceDate(date1) <= 0
+                })
+                self.records = recordsReturned
+                print(self.records)
+                completion(success: true)
+            } else {
+                //failed
+                print("error")
+                completion(success: false)
+            }
+        }
     }
 
     // MARK: - Table view data source
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return records.count
     }
 
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("subtitleCell", forIndexPath: indexPath)
-
+        let record = records[indexPath.row]
         // Configure the cell...
-
+        cell.textLabel?.text = record["body"] as? String
+        var detailText = record["studentName"] as? String ??  "(No Name)"
+        detailText = detailText + " - "
+        if let creationDate = record.creationDate {
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.timeStyle = .ShortStyle
+            dateFormatter.dateStyle = .ShortStyle
+            detailText = detailText + dateFormatter.stringFromDate(creationDate)
+        }
+        cell.detailTextLabel?.text = detailText
         return cell
     }
     
